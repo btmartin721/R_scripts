@@ -11,70 +11,60 @@ get.range <- function(r) {
   
 }
 
-setwd("C:/Users/evobi/Documents/work/BOX_Turtle_Genomics/Analyses/Dtest/lane4/all_output/")
 
 filenames <- list.files(pattern="*.txt")
+zfilenames <- list.files(pattern="*.z")
 
-testdata <- read.delim(filenames[1], header=TRUE, sep="\t")
 
-testrange <- get.range(testdata[[12]])
+popPvalue=list()
+popz=list()
 
-#print(paste(testrange[2], testrange[1], sep="\t"))
-
-testP <- get.p.values(testdata[[12]])
-testsig <- sum(testP < 0.05)
-
-print(testsig)
-rs <- nrow(testdata)
-
-paste(testsig, rws, sep="/")
-
-bon <- 0.05 / rs
-
-print(bon)
-
-for (files in filenames) {
+for (i in 1:length(zfilenames)) {
   
-  data <- read.delim(files, header=TRUE, sep="\t")
-  rws <- nrow(data)
+  zfiles <- read.delim(zfilenames[i], header=TRUE, sep="\t")
   
- #print(data[,12])
-  newP <- get.p.values(data[[12]])
-  #write.table(newP, file=paste(files, ".testP", sep=""), sep="\t")
+  Pvalue <- get.p.values(zfiles[[2]])
+  popPvalue[i] <- Pvalue
+  avgz <- zfiles[[2]]
+  popz[i] <- avgz
   
-  zrange <- get.range(data[[12]])
+}
+
+df_total <- data.frame()
+
+for (j in 1:length(filenames)) {
+  
+  test <- tools::file_path_sans_ext(filenames[j])
+  
+  dataset <- read.delim(filenames[j], header=TRUE, sep="\t")
+  rws <- nrow(dataset)
+  
+  newP <- get.p.values(dataset[[12]])
+
+  zrange <- get.range(dataset[[12]])
+  Z <- paste0("[", zrange[1], ",", zrange[2],"]")
+  
+  drange <- get.range(dataset[[8]])
+  D <- paste0("[", drange[1], ",", drange[2], "]")
+  
   
   sigtests <- sum(newP <= 0.05)
   sig_notsig <- paste(sigtests, rws, sep="/")
   
-  bonferronni <- 0.05 / rws
+  bonferroni <- 0.05 / rws
   
-  bonsig <- sum(newP <= bonferronni)
-  bonsig_notsig <- paste(bonsig, rws, sep="/")
+  bon_sig <- sum(newP <= bonferroni)
+  bonsig_notsig <- paste(bon_sig, rws, sep="/")
   
+  df <- data.frame(test, D, Z, sig_notsig, bonsig_notsig, popz[j], popPvalue[j], stringsAsFactors = FALSE)
   
+  colnames(df) <- c("Test", "D-Range", "Z-Range", "No.Significant", "Bonferroni", "Population-Z", "Pop_P-value")
+  row.names(df_total) <- NULL
   
-  
-  
-#}
-
-#for (i in 1:length(temp)){
-  
-#  assign(temp[i], read.delim(temp[i], header=TRUE, sep="\t"))
-  
-#}
-#lof <- lapply(filenames, read.delim, header=TRUE, sep="\t")
-
-
-#for (i in 1:length(lof)){
-  
-  #newP <- lapply(lof,get.p.values(lof[[i]][,12])
-  
-  #newdf <- cbind(lof[[i]],newP)
-  #print(lof[[i]][,12])
+  df_total <- rbind(df_total, df)
   
 }
 
-#lof[[1]]$v12
+ofile <- "summary.tsv"
 
-#lapply(lof, "[",12,drop=FALSE)
+write.table(df_total, file=ofile, quote=FALSE, sep="\t", col.names=TRUE, row.names=FALSE)
