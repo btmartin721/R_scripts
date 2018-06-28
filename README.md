@@ -13,7 +13,7 @@ The .txt file should have 13 columns and contain one row for each permutation of
 The .z file should have one row with three columns containing the test type (must be 4-taxon D-test) and population average Z-score and P-value.  
 
 ```
-Example *.txt file:
+Example *.txt file:  
 
 O              P3           P2            P1            ABBA     BABA  nloci   D      STDEV    X^2    X^2_pval  Z-score Z pval
 ONIL_BXON25   EANC_BX318    TTLA_BX422    MXMX_BX1196   25.8125 27.0625 2146  -0.0236 0.0883  0.0296  0.8635    0.2678  1.0000
@@ -21,10 +21,18 @@ ONIL_BXON25   EANC_BX318    TTLA_BX422    MXMX_BX1195   25.3125 24.0625 2125  0.
 ...
 ```
 
-```Example *.z file:
+```
+Example *.z file:  
+
 Statistic   Z-score   P-val
 D           -1.2633   0.317311
 ```
+
+```
+
+Example output (summary.tsv):
+
+
 
 **NOTE**: You must specify a working directory in R prior to running the script.
 
