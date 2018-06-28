@@ -4,7 +4,7 @@ Scripts written in R
 parseDtests.R takes a directory of D-test files from Steve Mussmann's Comp-D_MPI software (https://github.com/smussmann82/Comp-D_MPI) or Comp-D (https://github.com/smussmann82/Comp-D)  
 
 It then generates a summary table for all the files.  
-The script assumes that there are two files for each tests with extensions .txt and .z
+The script assumes that there are two files for each test with extensions .txt and .z
 
 NOTE: You must specify a working directory in R prior to running the script.
 
