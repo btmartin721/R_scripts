@@ -32,9 +32,9 @@ D           -1.2633   0.317311
 
 Example output (summary.tsv):
 
-Test                D-Range             Z-Range            No.Significant  Bonferroni      Population-Z    Pop_P-value
-ON+EAAL+GULA+MX     [0.0176,0.3735]     [-4.5141,-0.1234]  50/90           15/90          -3.74605         0.000179640801360612
-ON+EAAL+GULA+TTAR   [-0.0817,0.3577]    [-3.1064,0.6354]   15/90           0/90           -1.4051          0.159991544126064
+Test	            Mean.D (STDEV.D)	Z-Range	          Chi-Square.Sig	Z.Significant	Bonferroni.Alpha	Bonferroni.Significant	Population-Z	Pop_P-value
+ON+EAAL+GULA+MX	  0.22677 (0.06088)	[-4.5141,-0.1234]	36/90	          50/90	        0.00056	          15/90	             -3.74605	     0.00018
+ON+EAAL+GULA+TTAR	0.13508 (0.09668)	[-3.1064,0.6354]	14/90	          15/90	        0.00056	          0/90  -1.4051	  0.15999
 ...
 ```
 
