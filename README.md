@@ -47,3 +47,9 @@ Takes a directory of .xls files in a specific format (Douglas Lab DNAex forms) a
 Must be in .xls, and NOT .xlsx  
 Also, Cannot have hidden .xls files in directory.  
 If the format of your DNAex files differs from mine, you might have to modify the code.  
+
+## get_sequenced.R
+
+Takes a directory of Douglas lab ligation files as input, and outputs sequenced samples to .txt file.  
+Must setwd() in R prior to using.  All files must be .xlsx, NOT .xls  
+If the formatting for your ligation sheets differs from mine, you might have to modify the code.  
