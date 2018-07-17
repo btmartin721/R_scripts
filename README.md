@@ -40,3 +40,10 @@ ON+EAAL+GULA+TTAR	  0.13508 (0.09668)	 [-3.1064,0.6354  14/90	                 1
 
 **NOTE**: You must specify a working directory in R prior to running the script.
 
+
+## get_dnaex_data.R
+
+Takes a directory of .xls files in a specific format (Douglas Lab DNAex forms) and outputs data from several columns.  
+Must be in .xls, and NOT .xlsx  
+Also, Cannot have hidden .xls files in directory.  
+If the format of your DNAex files differs from mine, you might have to modify the code.  
