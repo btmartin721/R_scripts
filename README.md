@@ -54,3 +54,13 @@ If the format of your DNAex files differs from mine, you might have to modify th
 Takes a directory of Douglas lab ligation files as input, and outputs sequenced samples to .txt file.  
 Must setwd() in R prior to using.  All files must be .xlsx, NOT .xls  
 If the formatting for your ligation sheets differs from mine, you might have to modify the code.  
+
+## hybridDetective / parallelnewhybrid scripts
+
+Takes genepop input file and runs through the hybriddetective pipeline (https://github.com/bwringe/hybriddetective) conjunction with parallelnewhybrid (https://github.com/bwringe/parallelnewhybrid).  
+
+There are four R scripts associated with this pipeline: Steps 1-2, step 3, steps 4-7, and step 8. I did it that way because I was running parallelnewhybrid (steps 3 and 8) on a different computer, and then I'd collect the output and run the next steps.  
+
+Each R script requires that you change the settings and set the working directory in the SETTINGS sections at the top of the scripts. It is also preferable that you run each script one function at a time, so you can make sure everything works OK.  
+
+Take note of where the forward slashes are when specifying filenames and directories.  
