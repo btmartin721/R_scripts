@@ -64,3 +64,30 @@ There are four R scripts associated with this pipeline: Steps 1-2, step 3, steps
 Each R script requires that you change the settings and set the working directory in the SETTINGS sections at the top of the scripts. It is also preferable that you run each script one function at a time, so you can make sure everything works OK.  
 
 Take note of where the forward slashes are when specifying filenames and directories.  
+
+## HZAR_runSingle.R
+
+R script to run HZAR - Hybrid Zone Analysis using R.  
+
+The script only runs one locus at a time, so you have to make sure all the settings are correct and run it from the command-line.  
+
+When running from the command-line, it takes one argument: The index of the locus from the loci.txt file
+
+Example usage:
+
+`Rscript --vanilla HZAR_runSingle.R 2`
+
+The above runs the locus at index 2 (from the loci.txt file) through HZAR. If you want to run multiple loci, say all 12 loci, do as follows:  
+
+`for i in ``seq 1 12``; do Rscript --vanilla HZAR_runSingle.R $i; done >> log.txt 2>&1`  
+
+It runs them sequentially though. I haven't messed with getting them to run in parallel.  
+
+The script needs four csv files to run:   
+1. a locinames file with the locus names for all loci placed on one comma-separated row.  
+2. a one-column distances file with the distances for each population, starting at 0 and ending at the furthest distance.  
+3. a refAlleles file with the allele frequencies from the populations.  
+4. an nsamples file with the sample sizes for each allele from each population.  
+
+I generated the input files using the genepop2hzar.R script.  
+
