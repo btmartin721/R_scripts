@@ -79,7 +79,7 @@ Example usage:
 
 The above runs the locus at index 2 (from the loci.txt file) through HZAR. If you want to run multiple loci, say all 12 loci, do as follows:  
 
-`for i in ``seq 1 12``; do Rscript --vanilla HZAR_runSingle.R $i; done >> log.txt 2>&1`  
+```for i in `seq 1 12`; do Rscript --vanilla HZAR_runSingle.R $i; done >> log.txt 2>&1```   
 
 It runs them sequentially though. I haven't messed with getting them to run in parallel.  
 
