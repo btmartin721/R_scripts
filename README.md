@@ -73,6 +73,8 @@ This script takes a genepop file as input and generates the four files needed to
 You need to modify the settings and working directory at the top of the script prior to running it.  
 If you want to change the names of the four output files, you can specify them towards the bottom of the script. This was a quick and dirty script, so they are hard-coded in.  
 
+The script will subset diagnostic (clinal) loci based on allele frequencies >= 0.8 at one end of the cline and <=0.2 at the other end.  
+
 
 ## HZAR_runSingle.R  
 
