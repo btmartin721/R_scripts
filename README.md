@@ -65,7 +65,16 @@ Each R script requires that you change the settings and set the working director
 
 Take note of where the forward slashes are when specifying filenames and directories.  
 
-## HZAR_runSingle.R
+
+## genepop2hzar.R  
+
+This script takes a genepop file as input and generates the four files needed to run my HZAR_runSingle.R script (see below).  
+
+You need to modify the settings and working directory at the top of the script prior to running it.  
+If you want to change the names of the four output files, you can specify them towards the bottom of the script. This was a quick and dirty script, so they are hard-coded in.  
+
+
+## HZAR_runSingle.R  
 
 R script to run HZAR - Hybrid Zone Analysis using R.  
 
@@ -90,4 +99,4 @@ The script needs four csv files to run:
 4. an nsamples file with the sample sizes for each allele from each population.  
 
 I generated the input files using the genepop2hzar.R script.  
-
+ 
