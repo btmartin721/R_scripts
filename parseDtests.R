@@ -1,17 +1,16 @@
 
-get.p.values <- function(z) {
-  
-  pvalue2sided <- 2*pnorm(-abs(z))
-  
-}
-
 get.range <- function(r) {
   
   colrange <- range(r)
   
 }
 
+# Sets number of digits for P-values.
+# Can change to any integer.
+p.digits = 10
 
+
+# Filenames must end with .txt and .z (for popfiles)
 filenames <- list.files(pattern="*.txt")
 zfilenames <- list.files(pattern="*.z")
 
@@ -24,8 +23,8 @@ for (i in 1:length(zfilenames)) {
   
   zfiles <- read.delim(zfilenames[i], header=TRUE, sep="\t")
   
-  Pvalue <- get.p.values(zfiles[[2]])
-  popPvalue[i] <- round(Pvalue, digits = 5)
+  Pvalue <- zfiles[[3]]
+  popPvalue[i] <- round(Pvalue, digits = p.digits)
   avgz <- round(zfiles[[2]], digits = 5)
   popz[i] <- avgz
   
@@ -41,7 +40,7 @@ for (j in 1:length(filenames)) {
   dataset <- read.delim(filenames[j], header=TRUE, sep="\t")
   rws <- nrow(dataset)
   
-  newP <- get.p.values(dataset[[12]])
+  newP <- dataset[[13]]
 
   zrange <- get.range(dataset[[12]])
   minz <- round(zrange[1], digits = 5)
@@ -68,12 +67,20 @@ for (j in 1:length(filenames)) {
   
   # P-value <= Bonferroni alpha
   bon_sig <- sum(newP <= bonferroni)
+  
   #Adds Sig/NotSig to DataFrame
   bonsig_notsig <- paste(bon_sig, rws, sep="/")
   
-  df <- data.frame(test, D, Z, Chi_sig_notsig, sig_notsig, round(bonferroni, digits = 5), bonsig_notsig, popz[j], popPvalue[j], stringsAsFactors = FALSE)
+  df <- data.frame(test, D, Z, Chi_sig_notsig, sig_notsig, 
+                   round(bonferroni, digits = p.digits), 
+                   bonsig_notsig, popz[j], popPvalue[j], 
+                   stringsAsFactors = FALSE)
   
-  colnames(df) <- c("Test", "Mean.D (STDEV.D)", "Z-Range", "Chi-Square.Sig", "Z.Significant", "Bonferroni.Alpha", "Bonferroni.Significant", "Population-Z", "Pop_P-value")
+  colnames(df) <- c("Test", "Mean.D (STDEV.D)", "Z-Range", 
+                    "Chi-Square.Sig", "Z.Significant", 
+                    "Bonferroni.Alpha", "Bonferroni.Significant", 
+                    "Population-Z", "Pop_P-value")
+  
   row.names(df_total) <- NULL
   
   df_total <- rbind(df_total, df)
@@ -83,4 +90,9 @@ for (j in 1:length(filenames)) {
 # Outfile to write to. Will overwrite if script is run again.
 ofile <- "summary.tsv"
 
-write.table(df_total, file=ofile, quote=FALSE, sep="\t", col.names=TRUE, row.names=FALSE)
+write.table(format(df_total, digits = p.digits, scientific=F), 
+            file=ofile, 
+            quote=FALSE, 
+            sep="\t", 
+            col.names=TRUE, 
+            row.names=FALSE)
