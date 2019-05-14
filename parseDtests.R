@@ -24,7 +24,9 @@ for (i in 1:length(zfilenames)) {
   zfiles <- read.delim(zfilenames[i], header=TRUE, sep="\t")
   
   Pvalue <- zfiles[[3]]
+  
   popPvalue[i] <- round(Pvalue, digits = p.digits)
+
   avgz <- round(zfiles[[2]], digits = 5)
   popz[i] <- avgz
   
@@ -65,6 +67,13 @@ for (j in 1:length(filenames)) {
   # Bonferroni Correction from number of tests
   bonferroni <- 0.05 / rws
   
+  pop.p.adj.bonf <- popPvalue[[j]] * as.numeric(rws)
+  
+  if (pop.p.adj.bonf > 1.0)
+  {
+    pop.p.adj.bonf = 1.0
+  }
+  
   # P-value <= Bonferroni alpha
   bon_sig <- sum(newP <= bonferroni)
   
@@ -72,14 +81,15 @@ for (j in 1:length(filenames)) {
   bonsig_notsig <- paste(bon_sig, rws, sep="/")
   
   df <- data.frame(test, D, Z, Chi_sig_notsig, sig_notsig, 
-                   round(bonferroni, digits = p.digits), 
-                   bonsig_notsig, popz[j], popPvalue[j], 
+                   round(bonferroni, digits = p.digits), bonsig_notsig, 
+                   popz[j], popPvalue[j], 
+                   pop.p.adj.bonf,
                    stringsAsFactors = FALSE)
   
   colnames(df) <- c("Test", "Mean.D (STDEV.D)", "Z-Range", 
                     "Chi-Square.Sig", "Z.Significant", 
                     "Bonferroni.Alpha", "Bonferroni.Significant", 
-                    "Population-Z", "Pop_P-value")
+                    "Population-Z", "Pop_P-value", "Pop.P.Adjusted")
   
   row.names(df_total) <- NULL
   
