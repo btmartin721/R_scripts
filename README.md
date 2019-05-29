@@ -88,7 +88,7 @@ Example usage:
 
 `Rscript --vanilla HZAR_runSingle.R 2`
 
-The above runs the locus at index 2 (from the loci.csv file) through HZAR. If you want to run multiple loci sequentially, say all 12 loci, do as follows:  
+The above runs the locus at index 2 (from the locinames.csv file) through HZAR. If you want to run multiple loci sequentially, say all 12 loci, do as follows:  
 
 ```for i in `seq 1 12`; do Rscript --vanilla HZAR_runSingle.R $i; done >> log.txt 2>&1```   
 
