@@ -106,3 +106,40 @@ The script needs four csv files to run:
 
 I generated the input files using the genepop2hzar.R script in this repository.  
  
+## mle2bfd.Rmd  
+
+This is an Rmarkdown script to parse the output from Bayes Factor Delimitation - BFD - runs. It outputs two tables: One supplementary table containing a lot of info about the analysis, and another more final table to summarize the BFD results and rank the Bayes Factors.  
+
+The script requires the presence of a comma-separated file containing specific column names in the following order:  
+
+```
+BFD_run
+model
+K
+posterior_ESS
+likelihood_ESS
+MLE_ESS_min
+MLE_ESS_max
+MLE_ESS_avg
+MLE_ESS_median
+MLE	MLE_SD
+chainLength
+burnin
+MLE_burnin%
+MLE_CV_intervals
+MLE_CV_reps	
+Extended?
+BF	
+rank	
+support
+```
+
+I have included a template CSV file that you can use: BFDdata.csv   
+
+All the column names have to be present, but the values in some of the rows can be NA. For example, if you have runs that aren't finished running yet. If the script detects any NA values in a row, it doesn't include that run in the tables.    
+
+The values for all the columns were obtained either by copying the results from the PathSamplingAnalysis in BEAST2's app launcher (MODEL_SELECTION package) to excel. I then used Excel functions to calculate e.g., min, max, mean, and median ESS values from the PathSampling results.  The likelihood_ESS and posterior_ESS were obtained by assessing the likelihood traces in Tracer.  
+
+BFD_run is just the number of runs, sequentially 1 to Nruns. The model values can be any string identifying which model you are testing (e.g., East vs. West). K is the number of tips (species) in the BFD analysis.  
+
+The Extended?, rank, BF, and support column headers must be present, but the values are left empty. The Rmarkdown script will fill them in.  
