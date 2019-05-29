@@ -88,11 +88,15 @@ Example usage:
 
 `Rscript --vanilla HZAR_runSingle.R 2`
 
-The above runs the locus at index 2 (from the loci.txt file) through HZAR. If you want to run multiple loci, say all 12 loci, do as follows:  
+The above runs the locus at index 2 (from the loci.csv file) through HZAR. If you want to run multiple loci sequentially, say all 12 loci, do as follows:  
 
 ```for i in `seq 1 12`; do Rscript --vanilla HZAR_runSingle.R $i; done >> log.txt 2>&1```   
 
-It runs them sequentially though. I haven't messed with getting them to run in parallel.  
+If you want to run multiple loci (e.g., all 12 of them) in parallel, you can use GNU parallel as follows:  
+
+```parallel "Rscript --vanilla HZAR_runSingle.R {} >loc{}.logfile.txt 2>&1" :::: <(seq 1 12);```
+
+This requires GNU parallel to be installed. For an example bash script that I used to run HZAR in parallel (on a TORQUE PBS Job Scheduler), see my [pbs_scripts repository](https://github.com/btmartin721/pbs_scripts)  
 
 The script needs four csv files to run:   
 1. a locinames file with the locus names for all loci placed on one comma-separated row.  
@@ -100,5 +104,5 @@ The script needs four csv files to run:
 3. a refAlleles file with the allele frequencies from the populations.  
 4. an nsamples file with the sample sizes for each allele from each population.  
 
-I generated the input files using the genepop2hzar.R script.  
+I generated the input files using the genepop2hzar.R script in this repository.  
  
