@@ -1,0 +1,214 @@
+---
+title: "MLE To Bayes Factors"
+author: "Bradley T. Martin"
+date: "April 4, 2019"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# BFD MLE to Bayes Factors  
+
+This is a workflow to generate Bayes Factors from marginal likelihood estimates (MLE) obtained via BFD/SNAPP and BEAST2 Path Sampling. 
+
+
+## Input BFD Data  
+
+Input: The input is a CSV file containing the following columns (order does not matter):  
+
+1. "MLE"
+  + Can have NA values; they will be excluded.  
+  
+2. "rank"
+  + Should be blank (NA).  
+  
+3. "BFD_run"
+  + Can be integer or string.  
+  
+4. "model"
+  + Can be integer or string.  
+  
+5. "BF"
+  + Should be blank (NA).  
+
+
+First, load appropriate libraries:  
+
+```{r load.libraries, results="hide"}
+library("knitr")
+library("kableExtra")
+```
+
+## Loading and Summarizing the CSV file.  
+
+```{r csv2df}
+file <- file.choose()
+df <- read.csv(file = file, header = TRUE, sep = ",", stringsAsFactors = FALSE)
+```
+
+
+Produce a summary table of the ESS (Effective Samples Sizes) for each model:  
+
+```{r summarizeDF}
+
+# Combine BFD_run and model columns for better 
+# display. 
+df["BFD Model"] <- 
+  paste0("run", 
+         df[, "BFD_run"], 
+         ", ", 
+         df[, "model"])
+
+# Combine Median, Min, and Max columns for better
+# display. 
+df["MLE Med (Min, Max)"] <- 
+  paste0(df[, "MLE_ESS_median"], 
+         " (", 
+         df[, "MLE_ESS_min"], 
+         ", ", 
+         df[, "MLE_ESS_max"], ")")
+
+# Get the summary columns into a new DataFrame.
+run.summary <- df[, c("BFD Model", 
+                      "MLE_ESS_avg", 
+                      "MLE Med (Min, Max)", 
+                      "MLE", "MLE_SD")]
+
+# Rename the summary columns for Table
+colnames(run.summary) <- 
+  c("BFD Model", 
+    "ESS Mean", 
+    "ESS Median (Min, Max)", 
+    "MLE", "Std. Dev.")
+
+# Make the table using knitr::kable.
+kable(run.summary, 
+      format = "latex", 
+      align = "l", 
+      row.names = FALSE, 
+      digits = 2, 
+      caption = "BFD* ESS Summary", 
+      booktabs = TRUE) %>% 
+  
+  kable_styling(latex_options = 
+                  c("scale_down",
+                  "hold_position")) %>%
+  
+  row_spec(row = 0,
+           bold=TRUE)
+```
+
+Now remove missing data for runs that haven't finished yet:  
+
+## Remove missing data
+
+
+```{r dropNA}
+# This removes rows with NA in the MLE column.  
+completeVec <- 
+  complete.cases(df[, "MLE"])
+
+# Make a new dataframe without unfinished BFD runs.  
+df2 <- df[completeVec, ]
+```
+
+
+
+## Calculating the Bayes Factors
+
+The below chunk of code first finds the best model based on having the higest MLE. Then it ranks them and caluculates Bayes Factors for each one like so:    
+BF = (2 * (model1 - model2))  
+
+A negative value indicates support for model 1.  
+A positive value indicates support for model 2.  
+
+Support for the models is as shown from Kass and Raftery (1995) and Adam Leache's BFD Tutorial:  
+
+0 < BF < 2 is not worth more than a bare mention  
+2 < BF < 6 is positive evidence   
+6 < BF < 10 is strong support   
+and BF > 10 is decisive   
+
+I made model1 the allSplit model (run20) for all comparisons.  
+
+
+```{r calcBF}
+
+# Rank the MLE's. Highest = best model.
+df2$rank <- rank(x = abs(df2$MLE))
+
+# Get the MLE of rank 1.
+for (i in 1:nrow(df2)) { 
+  if (df2$rank[i] == 1) 
+  { 
+    best.mle <- df2$MLE[i] 
+  } 
+}
+
+# calculate the Bayes Factors.
+df2[, "BF"] <- (2 * (best.mle - df2[, "MLE"]))
+
+# Set BF of rank 1 to NA.
+for (i in 1:nrow(df2)) {
+  if (df2$rank[i] == 1)
+  {
+    df2$BF[i] <- NA
+  }
+}
+
+# Sort the dataframe rows by rank column.
+df2 <- df2[order(df2$rank), ]
+
+```
+
+
+
+Now make a nice table for the BF data:  
+
+
+
+```{r makeBFDtable}
+
+# Make the NA go away when comparing model1 to
+# itself.
+options(knitr.kable.NA = "-")
+
+# Just get columns of interest.
+bfd.tabdf <- 
+  df2[, c("BFD Model", 
+          "MLE", 
+          "K",
+          "rank",
+          "BF")]
+
+# Rename columns.
+colnames(bfd.tabdf) <- 
+  c("BFD Model", 
+    "MLE", 
+    "K",
+    "Rank",
+    "BF")
+
+# Write to table.
+kable(bfd.tabdf, 
+      format = "latex", 
+      booktabs = TRUE, 
+      digits = 2, 
+      align = c("l", "c", "c", "c"), 
+      row.names = FALSE, 
+      caption = "BFD* Bayes Factors") %>%
+  
+  kable_styling(full_width = TRUE, 
+                latex_options = 
+                  "hold_position") %>%
+  
+  column_spec(column = 1, 
+              width = "9cm") %>%
+ 
+   row_spec(row = 0,
+           bold=TRUE)
+```
+
+Now it's done!
